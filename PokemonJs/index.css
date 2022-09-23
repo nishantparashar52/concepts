@@ -1,0 +1,24 @@
+.container {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    row-gap: 1em;
+    align-items: center;
+    border: 3px solid #fff;
+    font-size: 16px;
+}
+
+.active {
+    border: 3px solid #ccc;
+}
+
+.tile>.image {
+    width: 50px;
+    margin-bottom: 1em;
+}
+
+#search {
+    height: 40px;
+    display: block;
+    font-size: 18px;
+    width: 98%;
+}

@@ -1,18 +1,20 @@
 import logo from './logo.svg';
 import './App.css';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, useRef} from 'react';
 
 function App() {
   const [block, setBlock] = useState(null);
   const [val, setValue] = useState(false);
   const [count, setCount] = useState(false);
   const [winner, setWinner] = useState(null);
+  const ref =useRef();
   useEffect(() => {
     const grid = new Array(3).fill(null).map(() => Array(3).fill(null));
     setBlock(grid);
   }, []);
   function blockClicked(e) {
     const value = e.target.innerHTML;
+    console.log(ref.current);
     if(!value) {
       let copy = [...block];
       let attr = e.target.getAttribute('attr');
@@ -24,7 +26,6 @@ function App() {
     }
   }
   function checkWinner(row, col, value) {
-    if(count === 9) setWinner(false);
     // check col
     for(let i = 0; i < 3; i++) {
       if(block[row][i] !== value) break;
@@ -50,11 +51,12 @@ function App() {
         if(i == 2) setWinner(value);
       }
     }
+    if(count === 9) setWinner(false);
   }
   return (
     <div className="App">
       Tic Tac Toe
-      <div onClick={blockClicked} className="grid">{block?.map((item,row) => {
+      <div onClick={blockClicked} className="grid" ref={ref}>{block?.map((item,row) => {
         return (item.map((itemList, col) => {
           return (
             <div attr={[row,col]} key={`${row}_${col}`}>{itemList}</div>

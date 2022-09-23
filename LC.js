@@ -133,7 +133,6 @@ function findTotalMaxProfit(k ,a) {
 // console.log(findTotalMaxProfit(2, [3,2,6,5,0,3]));
 // console.log(findTotalMaxProfit(2, [3,2,6,5,0,3]));
 
-
 function longestSub(s) {
     let re = new Set(), l = 0, r = 0, max = 0;
     while(r < s.length) {
@@ -146,9 +145,102 @@ function longestSub(s) {
             l++;
         }
     }
-    return re;
+    return re.size;
 }
 // function to find elem in rotated arr
+
+
+
+function longestSubKChar(s, k) {
+    if(s.length === 0 || k === 0) return 0;
+    let re = {}, l = 0, r = 0, max = 0;
+    while(r < s.length) {
+        let c = s.charAt(r);
+        re[s[r]] = re[s[r]] ? re[s[r]] + 1 : 1;
+        while(Object.keys(re).length > k) {
+            let d = s.charAt(l);
+            if(re[d] > 1) {
+                re[d] -= 1;
+            } else delete re[d];
+            l++;
+        }
+        max = Math.max(getSum(re), max);
+        r++;
+    }
+    return max;
+}
+function getSum(obj) {return Object.values(obj).reduce((acc, curr) => acc += curr, 0)};
+console.log(longestSubKChar('abcbbcbaad', 2));
+
+
+function longestPalindromicSubsequence(s) {
+    if(s.length <=1 ) return s.length;
+    let i = 0, max = 0, T = Array(s.length).fill(0).map(() => Array(s.length).fill(0));
+    for(let i = 0; i < s.length; i++) {
+        T[i][i] = 1;
+    }
+    for(let l = 2; l<=s.length;l++) {
+        for(let i = 0; i< s.length -l + 1; i++) {
+            let j = i + l - 1;
+            if(s[i] === s[j]) {
+                T[i][j] = 2 + T[i + 1][j - 1];
+            }
+            else {
+                T[i][j] = Math.max(T[i][j-1], T[i+1][j]);
+            }
+        }
+    }
+    return T[0][s.length -1];
+}
+
+console.log(longestPalindromicSubsequence('agbdba'));
+
+
+function Cansum(targetSum, nums) {
+    if(targetSum === 0) return true;
+    if(targetSum < 0) return false;
+    for(let num of nums) {
+        const remainder = targetSum - num;
+        if(Cansum(remainder, nums) === true) return true;
+    }
+    return false;
+}
+
+console.log(`canSum ${Cansum(7, [2,4,4])}`);
+
+// give back the array which created the sum
+function howSum(targetSum,nums) {
+    if(targetSum === 0) return []; 
+    if(targetSum < 0) return null;
+    for(let num of nums) {
+        let remainder = targetSum - num;
+        const result = howSum(remainder, nums);
+        if(result !== null) {
+            return [...result, num];
+        }
+    }
+    return null;
+}
+howSum(7, [2,3,4]);
+
+
+function bestSum(targetSum, nums) {
+    if(targetSum === 0) return []; 
+    if(targetSum < 0) return null;
+    let previousSum = null;
+    for(let num of nums) {
+        let remainder = targetSum - num;
+        const result = bestSum(remainder, nums);
+        if(result !== null) {
+           const finalResult = [...result, num];
+           if(previousSum === null || finalResult.length < previousSum.length) {
+            previousSum = finalResult;
+           }
+        }
+    }
+    return previousSum;
+}
+bestSum(7, [2,3,4,5]);
 
 function findElemInRotatedArr(b, elem) {
     let l = 0, h = b.length - 1;
@@ -169,8 +261,24 @@ function findElemInRotatedArr(b, elem) {
     return search(b, elem, l, h);
 }
 
+
+function findMinElemInRotatedArr(b) {
+    let l = 0, h = b.length - 1;
+    function search(a, low, high) {
+        if(low > high) return -1;
+        if(a[low] < a[high]) return a[low];
+        if(low === high) return a[low];
+        if((high - low) === 1) return Math.min(a[high], a[low]);
+        let mid = Math.floor((low + high) /2);
+        if(a[low] < a[mid]) {
+            return search(a, mid, high);
+        } return search(a, low, mid);
+    }
+    return search(b, l, h);
+}
+// console.log('minelement' + findMinElemInRotatedArr([4,5,6,7,8,9,1,2,3]))
 // console.log(findElemInRotatedArr([5,6,7,8,9,10,1,2,3,4], 8));
-console.log(findElemInRotatedArr([5,1,3],3));
+// console.log(findElemInRotatedArr([5,1,3],3));
 
 function firstNonRepeatingChar(s) {
     let hash = {};
@@ -335,7 +443,7 @@ function stairCaseProblemIterative(n) {
     }
     return num[n];
 }
-// console.log(stairCaseProblemIterative(10));
+// console.log(stairCaseProblemIterative(15));
 // 1,3 ,5
 
 
@@ -418,7 +526,7 @@ function returnTime(nextTime) {
     let timeinSeconds = Math.floor((delta / 60) % 60);
     return `${daysDiff} days ${timeinHours} hours ${timeinMinutes} mins ${timeinSeconds} seconds`;
 }
-console.log(returnTime('11 July 2022'));
+// console.log(returnTime('11 July 2022'));
 
 
 
@@ -462,7 +570,166 @@ Object.byString = function(o, s) {
     return o;
 }
 
-console.log(Object.byString(someObject, 'part1.name'));
-console.log(Object.byString(someObject, 'part2.qty'));
-console.log(Object.byString(someObject, 'part3[0].name'));
+// console.log(Object.byString(someObject, 'part1.name'));
+// console.log(Object.byString(someObject, 'part2.qty'));
+// console.log(Object.byString(someObject, 'part3[0].name'));
+
+// group anagrams
+
+// ['CARS', 'PREPAID', 'DUES', 'NOSE', 'ARCS', REPAID, 'OSEN']
+
+// [['CARS', 'ARCS'], ['DUES'], ['NOSE', 'OSEN']]
+
+
+function groupAnagrams(arr) {
+    const accObj = arr.reduce((acc, curr) => {
+        let currHash = {};
+        for(let i = 0; i< curr.length; i++) {
+            let currIndex = curr[i];
+            currHash[currIndex] = (currHash[currIndex] || 0) + 1;
+        }
+        const ordered = Object.keys(currHash).sort().reduce(
+            (obj, key) => { 
+                obj[key] = currHash[key]; 
+                return obj;
+            },{});
+        let finalHashStr = '';
+        for(let [key, value] of Object.entries(ordered)) {
+           finalHashStr += `${key}${value}`.concat('_');
+        }
+        if(acc[finalHashStr]) acc[finalHashStr].push(curr);
+        else acc[finalHashStr] = [curr];
+        return acc;
+    }, {});
+    return Object.values(accObj);
+} 
+// console.log(groupAnagrams(['CARS', 'PREPAID', 'DUES', 'NOSE', 'ARCS', 'REPAIDP', 'OSEN']));
+
+// approach 2
+function Anagram2(arr) {
+    let hash = {};
+    arr.forEach(str => {
+        let word = str.split('').sort();
+        hash[word] ? hash[word].push(str) : hash[word] = [str];
+    });
+    return Object.values(hash);
+}
+// console.log(Anagram2(['CARS', 'PREPAID', 'DUES', 'NOSE', 'ARCS', 'REPAIDP', 'OSEN']));
+function getInput(val) {
+    let result = matchInput(val);
+    document.getElementById('result').innerHTML = result;
+}
+function matchInput(val) {
+    const names = ['nishant', 'urvashi', 'nishu', 'naveen'];
+    // const reg = new RegExp(val.split('').join('\\w*').replace(/\W/, ""), 'i');
+    return names.filter(name => {
+        if(name.indexOf(val) > -1) return name;
+    });
+}
+function debounce(fn, time) {
+    let timer = null;
+    let context = this;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.call(context, args), time);
+    }
+}
+function dbFn(val) {
+    getInput(val);
+    // debounce(function () {console.log('hi')}, 500);
+}
+// dbFn = debounce(dbFn.bind(this), 500);
+// window.onresize = debounce(function(){console.log('resized')}, 500);
+
+function createBoxZigZag(row =4, col = 5) {
+   let arr = Array(row).fill(0).map(i => Array(col).fill(++i));
+}
+
+function ThreeSum(arr) {
+    let finalList = {};
+    let freq = arr.reduce((acc, curr) => {
+        acc[curr] = (acc[curr] || 0) + 1;
+        return acc;
+    }, {});
+    for(let i = 0, len = arr.length; i < len;i++) {
+        for(let j = i+1; j < len;j++) {
+            let X = 0 - arr[i] - arr[j];
+            if(freq[X]) {
+                const sorted = [X, arr[i], arr[j]].sort();
+                if(!finalList[sorted]) finalList[sorted] = sorted;
+            }
+        }
+    }
+    return [Object.values(finalList)];
+}
+// console.log(ThreeSum([-1,0,1,2,-2]));
+
+// 'cat', 'dog', 'cat', 'mice', 'cat', 'mice', 'mice'
+
+class getToys {
+    constructor() {
+        this.length = 0, this.maxLength = 0, this.finalArr = [];
+    }
+    returnMaxToys = (arr) => {
+        [...arr].forEach(item => {
+            if(this.finalArr.includes(item)) {
+                this.updateLength(item);
+            } else {
+                if(new Set([...this.finalArr]).size <=1) {
+                    this.updateLength(item)
+                } else {
+                    while(new Set([...this.finalArr]).size >= 2) {
+                        this.finalArr.splice(0, 1);
+                        this.length -= 1;
+                    }
+                    this.updateLength(item);
+                }
+            }
+        })
+        return this.maxLength;
+    };
+    updateLength = (item) => {
+        this.finalArr.push(item);
+        this.length += 1;
+        this.maxLength = Math.max(this.maxLength, this.length);
+    }
+}
+const toys = new getToys();
+// toys.returnMaxToys(['cat', 'dog', 'cat', 'mice', 'cat', 'mice', 'mice']);
+// console.log(returnMaxToys(['cat', 'dog', 'cat', 'mice', 'cat', 'mice', 'mice']));
+
+
+
+function coinChange(m, n) {
+    // let T[0][0] = 0;
+    if(n == 0) return 1;
+    if(n < 0) return -1;
+    if(m <=0 && n >= 1) return -1;
+    for(let i = 0; i< m; i++) {
+        for(let j = 0; j < n;j++) {
+            if(j >= i)T[i][j] = min(T[i -1][j], 1 + T[i][j - m[i]]);
             
+        }
+    }
+}
+
+
+// max product subarray
+
+function maxProductSubArr(arr) {
+    let maxSumArr = 1, minSumArr = 1, result = 0;
+    for(let i of arr) {
+        if(i === 0) {
+            maxSumArr = 1;
+            minSumArr = 1;
+            continue;
+        }
+        const temp = maxSumArr * i;
+        maxSumArr = Math.max(maxSumArr * i, minSumArr * i, i);
+        minSumArr = Math.min(temp, minSumArr * i, i);
+        result = Math.max(result, maxSumArr);
+    }
+    return result;
+}
+
+maxProductSubArr([2,3,-4,6,0,-15,4,-9]);
